@@ -7,7 +7,6 @@ const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
 
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(cardsRoute);
 app.use(usersRoute);
 app.get('*', (req, res) => {
