@@ -8,7 +8,7 @@ const getUsers = (req, res, next) => {
     .then((usersDataFromFile) => {
       res.status(200).send(usersDataFromFile);
     })
-    .catch(() => res.status(404).send({ message: 'File not found or some problems have occured while reading data from file' }))
+    .catch(() => res.status(500).send({ message: 'File not found or some problems have occured while reading data from file' }))
     .finally(() => next());
 };
 
@@ -20,7 +20,7 @@ const isUserId = (req, res, next) => {
       if (user) next();
       else res.status(404).send({ message: 'User ID not found' });
     })
-    .catch(() => res.status(404).send({ message: 'File not found or some problems have occured while reading data from file' }));
+    .catch(() => res.status(500).send({ message: 'File not found or some problems have occured while reading data from file' }));
 };
 
 const getUserById = (req, res) => {
@@ -30,7 +30,7 @@ const getUserById = (req, res) => {
       const user = usersDataFromFile.find((item) => item._id === id);
       res.status(200).send(user);
     })
-    .catch(() => res.status(404).send({ message: 'File not found or some problems have occured while reading data from file' }));
+    .catch(() => res.status(500).send({ message: 'File not found or some problems have occured while reading data from file' }));
 };
 
 module.exports = {
