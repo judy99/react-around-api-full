@@ -20,6 +20,13 @@ const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
 
 app.use(express.static(path.join(__dirname, 'public')));
+// temporary workaround. All cards will have the same author.
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5f6a161c35b014788c230f74',
+  };
+  next();
+});
 app.use(cardsRoute);
 app.use(usersRoute);
 app.get('*', (req, res) => {

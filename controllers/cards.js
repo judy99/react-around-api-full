@@ -1,14 +1,32 @@
-const path = require('path');
-const getDataFromFile = require('../utils/getDataFromFile');
-
-const dataPath = path.join(__dirname, '..', 'data', 'cards.json');
+const Card = require('../models/card');
 
 const getCards = (req, res) => {
-  return getDataFromFile(dataPath)
-    .then((cardsDataFromFile) => {
-      res.status(200).send(cardsDataFromFile);
-    })
-    .catch(() => res.status(500).send({ message: 'File not found or some problems have occured while reading data from file' }));
+  Card.find({})
+    .then((cards) => res.send(cards))
+    .catch((err) => res.status(500).send({
+      message: 'Server Error'
+    }));
 };
 
-module.exports = getCards;
+const createCard = (req, res) => {
+  const { name, link } = req.body;
+  Card.create({ name, link, owner: req.user._id })
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => res.status(400).send({
+      message: 'Invalid data passed to the method for creating card.'
+    }));
+};
+
+const deleteCard = (req, res) => {
+  Card.findByIdAndDelete(req.params.id)
+    .then((card) => res.status(200).send({ message: `Card ${card.name} was deleted` }))
+    .catch((err) => res.status(500).send({
+      message: 'Server Error. Can\'t delete card.'
+    }));
+};
+
+module.exports = {
+  getCards,
+  createCard,
+  deleteCard,
+};
