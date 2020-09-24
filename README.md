@@ -1,14 +1,25 @@
-# Around the U.S. Front End + Back End
+# Around the U.S. (Back End)
 
-## Directories
+## Routes
 
-`/public` — static files from the build of the React front-end app.
+GET /users — returns all users
+GET /users/:userId - returns a user by _id
+POST /users — creates a new user
 
-`/data` — JSON files to temporarily emulate database integration.
+GET /cards — returns all cards
+POST /cards — creates a new card
+DELETE /cards/:cardId — deletes a card by _id
 
-`/routes` — routing files.
+(Extra routes: need to be implemented)
+PATCH /users/me — update profile
+PATCH /users/me/avatar — update avatar
+PUT /cards/:cardId/likes — like a card
+DELETE /cards/:cardId/likes — unlike a card
 
-All other directories are optional and may be created by the developer if necessary. 
+
+## Workarounds
+-- Temporary Authorization Solution
+
 
 ## Running the Project
 
