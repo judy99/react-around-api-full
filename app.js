@@ -1,7 +1,7 @@
 const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { showError, notFoundError } = require('./utils/showError');
 
 const app = express();
 
@@ -19,7 +19,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
 
-app.use(express.static(path.join(__dirname, 'public')));
 // temporary workaround. All cards will have the same author.
 app.use((req, res, next) => {
   req.user = {
@@ -30,9 +29,7 @@ app.use((req, res, next) => {
 app.use(cardsRoute);
 app.use(usersRoute);
 app.get('*', (req, res) => {
-  res.status(404).send({
-    message: 'Requested resource not found.',
-  });
+  showError(res, notFoundError());
 });
 
 const {
