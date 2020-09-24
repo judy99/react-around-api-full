@@ -31,7 +31,7 @@ app.use(cardsRoute);
 app.use(usersRoute);
 app.get('*', (req, res) => {
   res.status(404).send({
-    message: 'Requested resource not found',
+    message: 'Requested resource not found.',
   });
 });
 
