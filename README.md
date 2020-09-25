@@ -10,9 +10,10 @@
 * `POST /cards` — creates a new card
 * `DELETE /cards/:cardId` — deletes a card by _id
 
-#(Extra routes: need to be implemented)
 * `PATCH /users/me` — update profile
 * `PATCH /users/me/avatar` — update avatar
+
+#(Extra routes: need to be implemented)
 * `PUT /cards/:cardId/likes` — like a card
 * `DELETE /cards/:cardId/likes` — unlike a card
 

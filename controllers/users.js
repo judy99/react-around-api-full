@@ -45,9 +45,20 @@ const updateUserProfile = (req, res) => {
     .catch((err) => showError(res, err));
 };
 
+const updateUserAvatar = (req, res) => {
+  const { _id: id } = req.user;
+  const { avatar: newAvatar } = req.body;
+  User.findOneAndUpdate(id, { avatar: newAvatar }, { runValidators: true })
+    .then((user) => res.status(httpStatusCode.OK).send({
+      data: user,
+    }))
+    .catch((err) => showError(res, err));
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUserProfile,
+  updateUserAvatar,
 };
