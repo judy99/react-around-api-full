@@ -1,5 +1,9 @@
 const User = require('../models/user');
-const { showError, httpStatusCode, notFoundError } = require('../utils/showError');
+const {
+  showError,
+  httpStatusCode,
+  notFoundError,
+} = require('../utils/showError');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -22,7 +26,22 @@ const getUserById = (req, res) => {
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(httpStatusCode.OK).send({ data: user }))
+    .then((user) => res.status(httpStatusCode.OK).send({
+      data: user,
+    }))
+    .catch((err) => showError(res, err));
+};
+
+const updateUserProfile = (req, res) => {
+  const {
+    name: newName = req.body.name,
+    about: newAbout = req.body.about,
+  } = req.body;
+  const { _id: id } = req.user;
+  User.findByIdAndUpdate(id, { name: newName, about: newAbout })
+    .then((user) => res.status(httpStatusCode.OK).send({
+      data: user,
+    }))
     .catch((err) => showError(res, err));
 };
 
@@ -30,4 +49,5 @@ module.exports = {
   getUsers,
   getUserById,
   createUser,
+  updateUserProfile,
 };
