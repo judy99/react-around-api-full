@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { showError, notFoundError } = require('./utils/showError');
+const { showError } = require('./utils/showError');
 
 const app = express();
 
@@ -28,8 +28,13 @@ app.use((req, res, next) => {
 });
 app.use(cardsRoute);
 app.use(usersRoute);
-app.get('*', (req, res) => {
-  showError(res, notFoundError());
+app.use('*', (req, res) => {
+  const e = new Error();
+  // const e = new Error('Internal Server Error');
+  // e.name = 'ServerError';
+  // showError(res, e, e.message);
+  showError(res, e, 'Internal Server Error');
+
 });
 
 const {

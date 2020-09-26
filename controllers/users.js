@@ -2,25 +2,20 @@ const User = require('../models/user');
 const {
   showError,
   httpStatusCode,
-  notFoundError,
+  // notFoundError,
 } = require('../utils/showError');
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.status(httpStatusCode.OK).send(users))
-    .catch((err) => showError(res, err));
+    .catch((err) => showError(res, err, 'Requested resource does not exist.'));
 };
 
 const getUserById = (req, res) => {
   const { id } = req.params;
   User.findById(id)
-    .then((users) => {
-      if (!users) {
-        return showError(res, notFoundError());
-      }
-      return res.status(httpStatusCode.OK).send(users);
-    })
-    .catch((err) => showError(res, err));
+    .then((users) => res.status(httpStatusCode.OK).send(users))
+    .catch((err) => showError(res, err, 'There is no such user.'));
 };
 
 const createUser = (req, res) => {
@@ -29,7 +24,7 @@ const createUser = (req, res) => {
     .then((user) => res.status(httpStatusCode.OK).send({
       data: user,
     }))
-    .catch((err) => showError(res, err));
+    .catch((err) => showError(res, err, 'Can\'t create user.'));
 };
 
 const updateUserProfile = (req, res) => {
@@ -38,11 +33,11 @@ const updateUserProfile = (req, res) => {
     about: newAbout = req.body.about,
   } = req.body;
   const { _id: id } = req.user;
-  User.findByIdAndUpdate(id, { name: newName, about: newAbout })
+  User.findOneAndUpdate(id, { name: newName, about: newAbout }, { runValidators: true })
     .then((user) => res.status(httpStatusCode.OK).send({
       data: user,
     }))
-    .catch((err) => showError(res, err));
+    .catch((err) => showError(res, err, 'Can\'t update user profile.'));
 };
 
 const updateUserAvatar = (req, res) => {
@@ -52,7 +47,7 @@ const updateUserAvatar = (req, res) => {
     .then((user) => res.status(httpStatusCode.OK).send({
       data: user,
     }))
-    .catch((err) => showError(res, err));
+    .catch((err) => showError(res, err, 'Can\'t update user avatar.'));
 };
 
 module.exports = {
