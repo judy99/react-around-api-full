@@ -2,7 +2,6 @@ const User = require('../models/user');
 const {
   showError,
   httpStatusCode,
-  // notFoundError,
 } = require('../utils/showError');
 
 const getUsers = (req, res) => {

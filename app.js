@@ -30,11 +30,7 @@ app.use(cardsRoute);
 app.use(usersRoute);
 app.use('*', (req, res) => {
   const e = new Error();
-  // const e = new Error('Internal Server Error');
-  // e.name = 'ServerError';
-  // showError(res, e, e.message);
   showError(res, e, 'Internal Server Error');
-
 });
 
 const {

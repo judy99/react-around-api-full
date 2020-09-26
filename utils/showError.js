@@ -9,16 +9,13 @@ const showError = (res, err, customMessage) => {
   let error;
   switch (err.name) {
     case 'ValidationError':
-    // case 'CastError':
       error = res.status(httpStatusCode.BAD_REQUEST).send({
-        // type: err.name,
         message: customMessage,
       });
       break;
     case 'NotFound':
     case 'CastError':
       error = res.status(httpStatusCode.NOT_FOUND).send({
-        // type: err.name,
         message: customMessage,
       });
       break;
