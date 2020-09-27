@@ -28,6 +28,11 @@ app.use((req, res, next) => {
 });
 app.use(cardsRoute);
 app.use(usersRoute);
+app.get('*', (req, res) => {
+  const e = new Error();
+  e.name = 'NotFound';
+  showError(res, e, 'Resource not found');
+});
 app.use('*', (req, res) => {
   const e = new Error();
   showError(res, e, 'Internal Server Error');

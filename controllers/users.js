@@ -13,8 +13,16 @@ const getUsers = (req, res) => {
 const getUserById = (req, res) => {
   const { id } = req.params;
   User.findById(id)
-    .then((users) => res.status(httpStatusCode.OK).send(users))
-    .catch((err) => showError(res, err, 'There is no such user.'));
+    .then((users) => {
+      if (users !== null) {
+        return res.status(httpStatusCode.OK).send(users);
+      }
+      const e = new Error();
+      e.name = 'NotFound';
+      showError(res, e, 'User not found.');
+      return e;
+    })
+    .catch((err) => showError(res, err, 'User not found.'));
 };
 
 const createUser = (req, res) => {
