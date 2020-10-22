@@ -57,6 +57,25 @@ const updateUserAvatar = (req, res) => {
     .catch((err) => showError(res, err, 'Can\'t update user avatar.'));
 };
 
+const registerUser = (req, res) => {
+  // bodyParser is installed so we can see these fields in req.body
+  const { email, password } = req.body;
+  // verification before doing smth
+  if (!email || !password) {
+    // if there is not email or passwod
+    res.status(400).send({ message: 'Email or password shoul not be empty.' });
+    // if the user already exists in the db
+    User.findOne({ email })
+    .then(user => {
+      if (user) {
+        return res.status(403).send({ message: 'User with such email exists.' });
+      }
+      // need to update createUser
+      return User.createUser();
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   getUserById,
