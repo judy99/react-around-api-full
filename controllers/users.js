@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const {
   showError,
@@ -26,12 +27,28 @@ const getUserById = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.status(httpStatusCode.OK).send({
-      data: user,
-    }))
-    .catch((err) => showError(res, err, 'Can\'t create user.'));
+  const { name, about, avatar, email, password } = req.body;
+
+  if (!email || !password) {
+    // if there is not email or passwod
+    return res.status(400).send({ message: 'Email or password shoul not be empty.' });
+  }
+
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        res.status(403).send({ message: 'User with such email exists.' });
+      }
+      else {
+        bcrypt.hash(password, 10)
+          .then((hash) => User.create({ name, about, avatar, email, password: hash }))
+          .then((newUser) => res.status(httpStatusCode.OK).send({
+            data: newUser,
+          }))
+          .catch((err) => showError(res, err, 'Can\'t create user.'));
+      }
+    })
+    .catch((err) => showError(res, err, 'Error.'));
 };
 
 const updateUserProfile = (req, res) => {
@@ -55,25 +72,6 @@ const updateUserAvatar = (req, res) => {
       data: user,
     }))
     .catch((err) => showError(res, err, 'Can\'t update user avatar.'));
-};
-
-const registerUser = (req, res) => {
-  // bodyParser is installed so we can see these fields in req.body
-  const { email, password } = req.body;
-  // verification before doing smth
-  if (!email || !password) {
-    // if there is not email or passwod
-    res.status(400).send({ message: 'Email or password shoul not be empty.' });
-    // if the user already exists in the db
-    User.findOne({ email })
-    .then(user => {
-      if (user) {
-        return res.status(403).send({ message: 'User with such email exists.' });
-      }
-      // need to update createUser
-      return User.createUser();
-    });
-  }
 };
 
 module.exports = {

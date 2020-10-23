@@ -4,19 +4,19 @@ const linkValidator = require('../utils/linkValidator');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    // required: true,
     minlength: 2,
     maxlength: 30,
   },
   about: {
     type: String,
-    required: true,
+    // required: true,
     minlength: 2,
     maxlength: 30,
   },
   avatar: {
     type: String,
-    required: true,
+    // required: true,
     validate: {
       validator: (link) => linkValidator(link),
       message: (props) => `${props.value} is not a valid link `,
@@ -25,10 +25,12 @@ const userSchema = new mongoose.Schema({
   email: {
     required: true,
     type: String,
+    unique: true,
   },
   password: {
     required: true,
     type: String,
+    minlength: 8,
   },
 });
 
