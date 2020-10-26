@@ -1,9 +1,12 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const {
   showError,
   httpStatusCode,
 } = require('../utils/showError');
+
+const JWT_KEY = 'some-secret-key';
 
 const getUsers = (req, res) => {
   User.find({})
@@ -74,10 +77,23 @@ const updateUserAvatar = (req, res) => {
     .catch((err) => showError(res, err, 'Can\'t update user avatar.'));
 };
 
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // we're creating a token
+      const token = jwt.sign({ _id: user._id }, JWT_KEY, { expiresIn: '7d' });
+      res.status(httpStatusCode.OK).send({ token });
+    })
+    .catch((err) => res.status(401).send({ message: err.message }));
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUserProfile,
   updateUserAvatar,
+  login,
 };
