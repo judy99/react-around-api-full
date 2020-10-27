@@ -18,14 +18,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
+const mid = require('./middlewares/auth.js');
+
 
 // temporary workaround. All cards will have the same author.
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5f6a161c35b014788c230f74',
-  };
-  next();
-});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '5f6a161c35b014788c230f74',
+//   };
+//   next();
+// });
+
+// app.use(mid);
+
 app.use(cardsRoute);
 app.use(usersRoute);
 app.get('*', (req, res) => {
