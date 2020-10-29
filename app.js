@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { showError } = require('./utils/showError');
+const { errors } = require('celebrate');
+// const { showError } = require('./utils/showError');
 const error = require('./middlewares/error');
 
 const app = express();
@@ -42,7 +43,9 @@ app.use(usersRoute);
 //   showError(res, e, 'Internal Server Error');
 // });
 
-app.use(error);
+app.use(errors()); // celebrate error handler
+
+app.use(error); // centralized error handler
 
 const {
   PORT = 3000,
