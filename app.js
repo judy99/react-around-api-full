@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
 // const { showError } = require('./utils/showError');
 const error = require('./middlewares/error');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
@@ -17,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
@@ -42,6 +44,7 @@ app.use(usersRoute);
 //   const e = new Error();
 //   showError(res, e, 'Internal Server Error');
 // });
+app.use(errorLogger);
 
 app.use(errors()); // celebrate error handler
 
