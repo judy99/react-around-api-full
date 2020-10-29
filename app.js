@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { showError } = require('./utils/showError');
+const error = require('./middlewares/error');
 
 const app = express();
 
@@ -18,9 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const cardsRoute = require('./routes/cards');
 const usersRoute = require('./routes/users');
-const mid = require('./middlewares/auth.js');
-
-
+// const mid = require('./middlewares/auth.js');
 // temporary workaround. All cards will have the same author.
 // app.use((req, res, next) => {
 //   req.user = {
@@ -33,15 +32,17 @@ const mid = require('./middlewares/auth.js');
 
 app.use(cardsRoute);
 app.use(usersRoute);
-app.get('*', (req, res) => {
-  const e = new Error();
-  e.name = 'NotFound';
-  showError(res, e, 'Resource not found');
-});
-app.use('*', (req, res) => {
-  const e = new Error();
-  showError(res, e, 'Internal Server Error');
-});
+// app.get('*', (req, res) => {
+//   const e = new Error();
+//   e.name = 'NotFound';
+//   showError(res, e, 'Resource not found');
+// });
+// app.use('*', (req, res) => {
+//   const e = new Error();
+//   showError(res, e, 'Internal Server Error');
+// });
+
+app.use(error);
 
 const {
   PORT = 3000,

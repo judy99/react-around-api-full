@@ -1,25 +1,41 @@
 const Card = require('../models/card');
-const { showError, httpStatusCode } = require('../utils/showError');
+const { httpStatusCode } = require('../utils/showError');
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(httpStatusCode.OK).send(cards))
-    .catch((err) => showError(res, err));
+    .then((cards) => {
+      if (!cards) {
+        throw new Error('Can\'t retrieve cards.');
+      }
+      return res.status(httpStatusCode.OK).send(cards);
+    })
+    // .catch((err) => showError(res, err));
+    .catch((err) => next(err));
 };
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(httpStatusCode.OK).send({ data: card }))
-    .catch((err) => showError(res, err, 'Can\'t create a card.'));
+    .then((card) => {
+      if (!card) {
+        throw new Error('Can\'t create a card.');
+      }
+      return res.status(httpStatusCode.OK).send({ data: card });
+    })
+    // .catch((err) => showError(res, err, 'Can\'t create a card.'));
+    .catch((err) => next(err));
 };
 
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   Card.findByIdAndDelete(req.params.id)
-    .then(() => res.status(httpStatusCode.OK).send({
-      message: 'Card was deleted',
-    }))
-    .catch((err) => showError(res, err, 'Can\'t delete a card.'));
+    .then((card) => {
+      if (!card) {
+        throw new Error('Can\'t delete a card.');
+      }
+      return res.status(httpStatusCode.OK).send({ message: 'Card was deleted' });
+    })
+    // .catch((err) => showError(res, err, 'Can\'t delete a card.'));
+    .catch((err) => next(err));
 };
 
 module.exports = {

@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const { NotFoundError } = require('../errors/not-found-err');
+const { BadReqError } = require('../errors/bad-req-err');
+const { AuthError } = require('../errors/auth-err');
+
 
 const linkValidator = require('../utils/linkValidator');
 
@@ -38,23 +42,23 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function (email, password, next) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       console.log('findUserByCredentials: ', user);
       if (!user) {
-        return Promise.reject(new Error('Incorrect email or password'));
+        throw new AuthError('Incorrect email or password');
       }
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new Error('Incorrect email or password'));
+            throw new AuthError('Incorrect email or password');
           }
-
           return user; // now user is available
         });
-    });
+    })
+    .catch((err) => next(err));
 };
 
 module.exports = mongoose.model('user', userSchema);
