@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const { NotFoundError } = require('../errors/not-found-err');
-const { BadReqError } = require('../errors/bad-req-err');
 const { AuthError } = require('../errors/auth-err');
-
-
 const linkValidator = require('../utils/linkValidator');
 
 const userSchema = new mongoose.Schema({
@@ -38,24 +34,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 8,
     // in order to user's password hash won't be returned from the database by default
-    select: false
+    select: false,
   },
 });
 
 userSchema.statics.findUserByCredentials = function (email, password, next) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
-      console.log('findUserByCredentials: ', user);
       if (!user) {
         throw new AuthError('Incorrect email or password');
       }
-
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
             throw new AuthError('Incorrect email or password');
           }
-          return user; // now user is available
+          return user;
         });
     })
     .catch((err) => next(err));

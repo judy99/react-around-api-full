@@ -30,10 +30,7 @@ users.get('/users/:id', auth, celebrate({
     id: Joi.string().alphanum(),
   }),
 }), getUserById);
-// get token and verify
-// users.get('/users/me', );
 
-// users.post('/users', createUser);
 users.patch('/users/me', auth, celebrate({
   body: Joi.object().keys({
     name: Joi.string().alphanum().min(2).max(30),

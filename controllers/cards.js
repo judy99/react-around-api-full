@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { httpStatusCode } = require('../utils/showError');
+const { httpStatusCode } = require('../utils/httpCodes');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -9,7 +9,6 @@ const getCards = (req, res, next) => {
       }
       return res.status(httpStatusCode.OK).send(cards);
     })
-    // .catch((err) => showError(res, err));
     .catch((err) => next(err));
 };
 
@@ -22,7 +21,6 @@ const createCard = (req, res, next) => {
       }
       return res.status(httpStatusCode.OK).send({ data: card });
     })
-    // .catch((err) => showError(res, err, 'Can\'t create a card.'));
     .catch((err) => next(err));
 };
 
@@ -34,7 +32,6 @@ const deleteCard = (req, res, next) => {
       }
       return res.status(httpStatusCode.OK).send({ message: 'Card was deleted' });
     })
-    // .catch((err) => showError(res, err, 'Can\'t delete a card.'));
     .catch((err) => next(err));
 };
 

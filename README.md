@@ -13,13 +13,22 @@
 * `PATCH /users/me` — update profile
 * `PATCH /users/me/avatar` — update avatar
 
+* `POST /signup` — create a user account
+* `POST /signin` — login user
+
+
 #(Extra routes: need to be implemented)
 * `PUT /cards/:cardId/likes` — like a card
 * `DELETE /cards/:cardId/likes` — unlike a card
 
 
-## Workarounds
--- Temporary Authorization Solution
+## Authorization and authentication
+* only /signin and /signup routes can be used for unauthorized users. The rest of routes require authorization token.
+
+## Other
+* Centralized Error Handling
+* Validating Requests
+* Logging of Requests and Errors (request.log, error.log)
 
 
 ## Running the Project
