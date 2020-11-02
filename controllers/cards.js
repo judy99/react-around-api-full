@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { httpStatusCode } = require('../utils/httpCodes');
 const { BadReqError } = require('../errors/bad-req-err');
 const { NotFoundError } = require('../errors/not-found-err');
+const { AuthError } = require('../errors/auth-err');
 const Card = require('../models/card');
 
 const getCards = (req, res, next) => {
@@ -38,6 +39,9 @@ const deleteCard = (req, res, next) => {
         if (!card) {
           throw new NotFoundError('No card with matching ID found.');
         }
+        if (req.user._id !== card.owner) {
+          throw new AuthError('Not enough permission for this operation.');
+        }
         return res.status(httpStatusCode.OK).send({ message: 'Card was deleted' });
       })
       .catch((err) => next(err));
@@ -45,6 +49,10 @@ const deleteCard = (req, res, next) => {
     throw new BadReqError('Can\'t delete card. Wrong ID format.');
   }
 };
+
+// TODO:
+// * `PUT /cards/:cardId/likes` — like a card
+// * `DELETE /cards/:cardId/likes` — unlike a card
 
 module.exports = {
   getCards,
