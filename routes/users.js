@@ -2,6 +2,7 @@ const { celebrate, Joi } = require('celebrate');
 const users = require('express').Router();
 const {
   getUsers,
+  getUser,
   getUserById,
   createUser,
   updateUserProfile,
@@ -25,6 +26,9 @@ users.post('/signin', celebrate({
 }), login);
 
 users.get('/users', auth, getUsers);
+
+users.get('/users/me', auth, getUser);
+
 users.get('/users/:id', auth, celebrate({
   params: Joi.object().keys({
     id: Joi.string().alphanum(),
@@ -33,14 +37,14 @@ users.get('/users/:id', auth, celebrate({
 
 users.patch('/users/me', auth, celebrate({
   body: Joi.object().keys({
-    name: Joi.string().alphanum().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
     about: Joi.string().min(2).max(30),
   }),
 }), updateUserProfile);
 
 users.patch('/users/me/avatar', auth, celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(/^(http:\/\/|https:\/\/)(w{3}\.)?([\w\-\/\(\):;,\?]+\.{1}?[\w\-\/\(\):;,\?]+)+#?$/),
+    avatar: Joi.string().required().pattern(/^(http:\/\/|https:\/\/)(w{3}\.)?([\w\-\/\(\):;,\?]+\.{1}?[\w\-\/\(\):;,\?]+)+#?$/),
   }),
 }), updateUserAvatar);
 

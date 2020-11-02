@@ -12,6 +12,7 @@ a link to the website that hosts your API.
 ## Routes
 
 * `GET /users` — returns all users
+* `GET /users/me` — returns a current user
 * `GET /users/:userId` - returns a user by _id
 * `POST /users` — creates a new user
 

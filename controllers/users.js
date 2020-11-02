@@ -5,6 +5,7 @@ const { httpStatusCode } = require('../utils/httpCodes');
 const { NotFoundError } = require('../errors/not-found-err');
 const { BadReqError } = require('../errors/bad-req-err');
 const { AuthError } = require('../errors/auth-err');
+const { defaultUser } = require('../utils/defaultUser');
 
 const JWT_KEY = 'some-secret-key';
 
@@ -31,8 +32,27 @@ const getUserById = (req, res, next) => {
     .catch((err) => next(err));
 };
 
+const getUser = (req, res, next) => {
+  const { _id } = req.user;
+  User.findById({ _id })
+    .then((users) => {
+      if (!users) {
+        throw new NotFoundError('No user info found');
+      }
+      return res.status(httpStatusCode.OK).send({ _id, email: users.email });
+    })
+    .catch((err) => next(err));
+};
+
 const createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name = defaultUser.NAME,
+    about = defaultUser.ABOUT,
+    avatar = defaultUser.AVATAR,
+    email,
+    password,
+  } = req.body;
+
   if (!email || !password) {
     throw new BadReqError('Email or password should not be empty.');
   }
@@ -57,12 +77,9 @@ const createUser = (req, res, next) => {
 };
 
 const updateUserProfile = (req, res, next) => {
-  const {
-    name: newName = req.body.name,
-    about: newAbout = req.body.about,
-  } = req.body;
-  const { _id: id } = req.user;
-  User.findOneAndUpdate(id, { name: newName, about: newAbout }, { runValidators: true })
+  const { name, about } = req.body;
+  const { _id } = req.user;
+  User.findOneAndUpdate({ _id }, { name, about }, { runValidators: true, new: true })
     .then((user) => {
       if (!user) {
         throw new Error('Can\'t update user profile.');
@@ -73,9 +90,9 @@ const updateUserProfile = (req, res, next) => {
 };
 
 const updateUserAvatar = (req, res, next) => {
-  const { _id: id } = req.user;
-  const { avatar: newAvatar } = req.body;
-  User.findOneAndUpdate(id, { avatar: newAvatar }, { runValidators: true })
+  const { avatar } = req.body;
+  const { _id } = req.user;
+  User.findOneAndUpdate({ _id }, { avatar }, { runValidators: true, new: true })
     .then((user) => {
       if (!user) {
         throw new Error('Can\'t update user avatar.');
@@ -101,6 +118,7 @@ const login = (req, res, next) => {
 
 module.exports = {
   getUsers,
+  getUser,
   getUserById,
   createUser,
   updateUserProfile,
