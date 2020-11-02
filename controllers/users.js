@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -21,15 +22,19 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  const { id } = req.params;
-  User.findById(id)
-    .then((users) => {
-      if (!users) {
-        throw new NotFoundError('No user with matching ID found');
-      }
-      return res.status(httpStatusCode.OK).send(users);
-    })
-    .catch((err) => next(err));
+  try {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    User.findById(id)
+      .then((users) => {
+        if (!users) {
+          throw new NotFoundError('No user with matching ID found.');
+        }
+        return res.status(httpStatusCode.OK).send(users);
+      })
+      .catch((err) => next(err));
+  } catch (e) {
+    throw new BadReqError('Wrong ID format.');
+  }
 };
 
 const getUser = (req, res, next) => {
