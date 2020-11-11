@@ -44,7 +44,7 @@ const getUser = (req, res, next) => {
       if (!users) {
         throw new NotFoundError('No user info found');
       }
-      return res.status(httpStatusCode.OK).send({ _id, email: users.email });
+      return res.status(httpStatusCode.OK).send(users);
     })
     .catch((err) => next(err));
 };

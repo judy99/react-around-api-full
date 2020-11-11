@@ -1,6 +1,8 @@
 const { celebrate, Joi } = require('celebrate');
 const cards = require('express').Router();
-const { getCards, createCard, deleteCard } = require('../controllers/cards.js');
+const {
+  getCards, createCard, deleteCard, unlikeCard, likeCard,
+} = require('../controllers/cards.js');
 const auth = require('../middlewares/auth.js');
 
 cards.get('/cards', auth, getCards);
@@ -14,5 +16,7 @@ cards.post('/cards', auth, celebrate({
 createCard);
 
 cards.delete('/cards/:id', auth, deleteCard);
+cards.put('/cards/likes/:id', auth, likeCard);
+cards.delete('/cards/likes/:id', auth, unlikeCard);
 
 module.exports = cards;
