@@ -22,13 +22,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/aroundb', {
   useUnifiedTopology: true,
 });
 
-//for production
-// connect the main application router at /api
-// app.use('/api', require('../router'));
-// app.use(express.static(path.join(__dirname, 'build')));
+//  for production
+//  connect the main application router at /api
+app.use('/api', require('../router'));
 
-//for dev
-app.use(express.static('../frontend/build'));
+app.use(express.static(path.join(__dirname, 'build')));
+
+//  for dev
+// app.use(express.static('../frontend/build'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
